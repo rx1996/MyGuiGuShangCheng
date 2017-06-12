@@ -1,6 +1,7 @@
 package com.atguigu.guigushangcheng2.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.support.v4.print.PrintHelper;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,6 +26,8 @@ import com.zhy.magicviewpager.transformer.RotateYTransformer;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.iwgang.countdownview.CountdownView;
 
 import static com.atguigu.guigushangcheng2.R.id.countdownview;
@@ -250,37 +253,94 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
     }
 
+    private boolean isFrist = false;
+    private Handler mHandler = new Handler();
     class SeckillViewHolder extends RecyclerView.ViewHolder{
 
         private final Context mContext;
-        private TextView tvMore;
-        private RecyclerView recyclerView;
-        private CountdownView countdownView;
+        @BindView(R.id.countdownview)
+        CountdownView countdownview;
+        @BindView(R.id.tv_more_seckill)
+        TextView tvMoreSeckill;
+        @BindView(R.id.rv_seckill)
+        RecyclerView rvSeckill;
+
+        SeckillRecyclerViewAdapter adapter;
+
+        Handler mHandler = new Handler();
+        HomeBean.ResultBean.SeckillInfoBean seckillInfo;
+
+        /**
+         * 开始刷新
+         */
+        void startRefreshTime() {
+            mHandler.postDelayed(mRefreshTimeRunnable, 1);
+        }
+
+        Runnable mRefreshTimeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                //得到当前时间
+                long currentTime = System.currentTimeMillis();
+
+                if (currentTime >= Long.parseLong(seckillInfo.getEnd_time())) {
+                    // 倒计时结束
+                    mHandler.removeCallbacksAndMessages(null);
+                } else {
+                    //更新时间
+                    countdownview.updateShow(Long.parseLong(seckillInfo.getEnd_time()) - currentTime);
+                    //每隔1000毫秒更新一次
+                    mHandler.postDelayed(mRefreshTimeRunnable, 1000);
+                }
+
+            }
+        };
+
+
         public SeckillViewHolder(Context mContext, View itemView) {
             super(itemView);
             this.mContext = mContext;
-            tvMore = (TextView) itemView.findViewById(R.id.tv_more_seckill);
-            recyclerView = (RecyclerView) itemView.findViewById(R.id.rv_seckill);
-            countdownView = (CountdownView) itemView.findViewById(countdownview);
+            ButterKnife.bind(this, itemView);
+
         }
 
-        public void setData(HomeBean.ResultBean.SeckillInfoBean seckill_info) {
-            SeckillRecyclerViewAdapter adapter = new SeckillRecyclerViewAdapter(mContext,seckill_info);
-            recyclerView.setAdapter(adapter);
-            //设置布局管理器
-            recyclerView.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.HORIZONTAL,false));
-            //设置点击事件
+        public void setData(final HomeBean.ResultBean.SeckillInfoBean seckill_info) {
+            this.seckillInfo = seckill_info;
+            //1.已经有数据
+            //2.设置RecyclerView的适配器
+            adapter = new SeckillRecyclerViewAdapter(mContext, seckill_info);
+            rvSeckill.setAdapter(adapter);
+            //布局管理器
+            rvSeckill.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+
+
+            //3.设置item的点击事件
+            //接口
+            //回调
             adapter.setOnItemClickListener(new SeckillRecyclerViewAdapter.OnItemClickListener() {
                 @Override
                 public void onItemClick(View v, int position) {
-                    Toast.makeText(mContext, "postion=="+position, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mContext, "position" + position, Toast.LENGTH_SHORT).show();
                 }
+
             });
-            //设置秒杀的时间
-            countdownView.setTag("test1");
-            long duration = Long.parseLong(seckill_info.getEnd_time())-Long.parseLong(seckill_info.getStart_time());
-            countdownView.start(duration);
+
+            if (!isFrist) {
+                isFrist = true;
+                //计算倒计时持续的时间
+                long totalTime = Long.parseLong(seckill_info.getEnd_time()) - Long.parseLong(seckill_info.getStart_time());
+
+                // 校对倒计时
+                long curTime = System.currentTimeMillis();
+                //重新设置结束数据时间
+                seckillInfo.setEnd_time((curTime + totalTime + ""));
+
+                //开始刷新
+                startRefreshTime();
+            }
         }
     }
+
+
 }
 
