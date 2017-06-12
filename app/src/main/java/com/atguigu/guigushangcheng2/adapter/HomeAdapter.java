@@ -112,7 +112,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         //全部写完的时候修改成6，只实现一个类型的话就返回1
-        return 4;
+        return 5;
     }
 
     @Override
@@ -129,9 +129,9 @@ public class HomeAdapter extends RecyclerView.Adapter {
         else if (viewType == SECKILL) {
             return new SeckillViewHolder(mContext, inflater.inflate(R.layout.seckill_item, null));
         }
-        /*else if (viewType == RECOMMEND) {
+        else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mContext, inflater.inflate(R.layout.recommend_item, null));
-        } else if (viewType == HOT) {
+        } /*else if (viewType == HOT) {
             return new HotViewHolder(mContext, inflater.inflate(R.layout.hot_item, null));
         }*/
 
@@ -158,10 +158,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
             SeckillViewHolder seckillViewHolder = (SeckillViewHolder) holder;
             seckillViewHolder.setData(result.getSeckill_info());
         }
-        /*else if (getItemViewType(position) == RECOMMEND) {
+        else if (getItemViewType(position) == RECOMMEND) {
             RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
             recommendViewHolder.setData(result.getRecommend_info());
-        } else if (getItemViewType(position) == HOT) {
+        } /*else if (getItemViewType(position) == HOT) {
             HotViewHolder hotViewHolder = (HotViewHolder) holder;
             hotViewHolder.setData(resultBean.getHot_info());
         }*/
@@ -338,6 +338,34 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 //开始刷新
                 startRefreshTime();
             }
+        }
+    }
+
+    class RecommendViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tv_more_recommend)
+        TextView tvMoreRecommend;
+        @BindView(R.id.gv_recommend)
+        GridView gvRecommend;
+        RecommendGridViewAdapter adapter;
+        public RecommendViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            ButterKnife.bind(RecommendViewHolder.this,itemView);
+        }
+
+        public void setData(final List<HomeBean.ResultBean.RecommendInfoBean> recommend_info) {
+
+            //1.设置适配器
+            adapter = new RecommendGridViewAdapter(mContext,recommend_info);
+            gvRecommend.setAdapter(adapter);
+            //2.设置点击事件
+
+            gvRecommend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    Toast.makeText(mContext, "postion=="+recommend_info.get(position).getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
