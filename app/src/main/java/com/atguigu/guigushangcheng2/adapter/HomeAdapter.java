@@ -27,6 +27,8 @@ import java.util.List;
 
 import cn.iwgang.countdownview.CountdownView;
 
+import static com.atguigu.guigushangcheng2.R.id.countdownview;
+
 /**
  * Created by Administrator on 2017/6/12.
  */
@@ -123,7 +125,8 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
         else if (viewType == SECKILL) {
             return new SeckillViewHolder(mContext, inflater.inflate(R.layout.seckill_item, null));
-        } /*else if (viewType == RECOMMEND) {
+        }
+        /*else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mContext, inflater.inflate(R.layout.recommend_item, null));
         } else if (viewType == HOT) {
             return new HotViewHolder(mContext, inflater.inflate(R.layout.hot_item, null));
@@ -151,9 +154,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
         else if (getItemViewType(position) == SECKILL) {
             SeckillViewHolder seckillViewHolder = (SeckillViewHolder) holder;
             seckillViewHolder.setData(result.getSeckill_info());
-        } /*else if (getItemViewType(position) == RECOMMEND) {
+        }
+        /*else if (getItemViewType(position) == RECOMMEND) {
             RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
-            recommendViewHolder.setData(resultBean.getRecommend_info());
+            recommendViewHolder.setData(result.getRecommend_info());
         } else if (getItemViewType(position) == HOT) {
             HotViewHolder hotViewHolder = (HotViewHolder) holder;
             hotViewHolder.setData(resultBean.getHot_info());
@@ -257,7 +261,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
             this.mContext = mContext;
             tvMore = (TextView) itemView.findViewById(R.id.tv_more_seckill);
             recyclerView = (RecyclerView) itemView.findViewById(R.id.rv_seckill);
-            countdownView = (CountdownView) itemView.findViewById(R.id.countdownview);
+            countdownView = (CountdownView) itemView.findViewById(countdownview);
         }
 
         public void setData(HomeBean.ResultBean.SeckillInfoBean seckill_info) {
@@ -272,10 +276,11 @@ public class HomeAdapter extends RecyclerView.Adapter {
                     Toast.makeText(mContext, "postion=="+position, Toast.LENGTH_SHORT).show();
                 }
             });
+            //设置秒杀的时间
+            countdownView.setTag("test1");
+            long duration = Long.parseLong(seckill_info.getEnd_time())-Long.parseLong(seckill_info.getStart_time());
+            countdownView.start(duration);
         }
     }
-
-
-
 }
 
