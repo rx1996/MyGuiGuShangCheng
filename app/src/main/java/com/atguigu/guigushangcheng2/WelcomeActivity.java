@@ -6,7 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MotionEvent;
 
-import com.atguigu.guigushangcheng2.home.activity.MainActivity;
+import com.atguigu.guigushangcheng2.activity.MainActivity;
 
 public class WelcomeActivity extends AppCompatActivity {
 
