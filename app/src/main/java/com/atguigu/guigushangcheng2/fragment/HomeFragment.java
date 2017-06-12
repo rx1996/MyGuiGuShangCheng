@@ -1,12 +1,28 @@
 package com.atguigu.guigushangcheng2.fragment;
 
-import android.graphics.Color;
+import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.atguigu.guigushangcheng2.R;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
+import com.atguigu.guigushangcheng2.bean.HomeBean;
+import com.atguigu.guigushangcheng2.utils.Constants;
+import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.callback.StringCallback;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+import okhttp3.Call;
 
 /**
  * Created by Administrator on 2017/6/12.
@@ -14,7 +30,16 @@ import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
 
 public class HomeFragment extends BaseFragment {
     private static final String TAG = HomeFragment.class.getSimpleName();//"HomeFragment"
-    private TextView textView;
+    @BindView(R.id.tv_search_home)
+    TextView tvSearchHome;
+    @BindView(R.id.tv_message_home)
+    TextView tvMessageHome;
+    @BindView(R.id.rv_home)
+    RecyclerView rvHome;
+    @BindView(R.id.ib_top)
+    ImageButton ibTop;
+    Unbinder unbinder;
+    private String homeUrl;
 
     /**
      * 初始化控件
@@ -23,17 +48,65 @@ public class HomeFragment extends BaseFragment {
     @Override
     public View initView() {
         Log.e(TAG, "初始化主页控件...");
-        textView = new TextView(mContext);
-        textView.setGravity(Gravity.CENTER);
-        textView.setTextSize(25);
-        textView.setTextColor(Color.RED);
-        return textView;
+        View view = View.inflate(mContext, R.layout.fragment_home, null);
+        unbinder = ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void initData() {
         super.initData();
         Log.e(TAG, "绑定数据到控件上...");
-        textView.setText("我是主页内容");
+        getDataFromNet();
     }
+
+    private void getDataFromNet() {
+        homeUrl = Constants.HOME_URL;
+        OkHttpUtils
+                .get()
+                .url(homeUrl)
+                .build()
+                .execute(new MyStringCallback());
+    }
+    class MyStringCallback extends StringCallback {
+
+        @Override
+        public void onError(Call call, Exception e, int id) {
+            Log.e(TAG,"请求成功失败=="+e.getMessage());
+        }
+
+        @Override
+        public void onResponse(String response, int id) {
+            Log.e(TAG,"请求成功==");
+            processData(response);
+
+        }
+    }
+    private void processData(String json) {
+        //解析数据
+        HomeBean homeBean = JSON.parseObject(json,HomeBean.class);
+        Log.e(TAG,"解析成功了=="+homeBean.getResult().getAct_info().get(0).getName());
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick({R.id.tv_search_home, R.id.tv_message_home, R.id.ib_top})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.tv_search_home:
+                Toast.makeText(mContext, "搜索", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.tv_message_home:
+                Toast.makeText(mContext, "查看", Toast.LENGTH_SHORT).show();
+                break;
+            case R.id.ib_top:
+                Toast.makeText(mContext, "回到顶部", Toast.LENGTH_SHORT).show();
+                break;
+        }
+    }
+
 }
