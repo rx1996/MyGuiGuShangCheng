@@ -1,6 +1,7 @@
 package com.atguigu.guigushangcheng2.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -92,8 +93,22 @@ public class HomeFragment extends BaseFragment {
         //设置适配器
         adapter = new HomeAdapter(mContext,homeBean.getResult());
         rvHome.setAdapter(adapter);
+        GridLayoutManager manager =new GridLayoutManager(mContext,1);
         //设置布局管理器
-        rvHome.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+        rvHome.setLayoutManager(manager);
+        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                if(position <=3){
+                    ///按钮隐藏
+                    ibTop.setVisibility(View.GONE);
+                }else{
+                    //按钮显示
+                    ibTop.setVisibility(View.VISIBLE);
+                }
+                return 1;
+            }
+        });
 
     }
 
