@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -98,7 +100,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         //全部写完的时候修改成6，只实现一个类型的话就返回1
-        return 1;
+        return 2;
     }
 
     @Override
@@ -106,10 +108,9 @@ public class HomeAdapter extends RecyclerView.Adapter {
         if (viewType == BANNER) {
             return new BannerViewHolder(mContext, inflater.inflate(R.layout.banner_viewpager, null));
         }
-
-//        else if (viewType == CHANNEL) {
-//            return new ChannelViewHolder(mContext, inflater.inflate(R.layout.channel_item, null));
-//        }
+        else if (viewType == CHANNEL) {
+            return new ChannelViewHolder(mContext, inflater.inflate(R.layout.channel_item, null));
+        }
          /*
         else if (viewType == ACT) {
             return new ActViewHolder(mContext, inflater.inflate(R.layout.act_item, null));
@@ -131,10 +132,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
             //设置数据Banner的数据
             bannerViewHolder.setData(result.getBanner_info());
         }
-//        else if (getItemViewType(position) == CHANNEL) {
-//            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
-//            channelViewHolder.setData(result.getChannel_info());
-//        }
+        else if (getItemViewType(position) == CHANNEL) {
+            ChannelViewHolder channelViewHolder = (ChannelViewHolder) holder;
+            channelViewHolder.setData(result.getChannel_info());
+        }
 
         /* else if (getItemViewType(position) == ACT) {
             ActViewHolder actViewHolder = (ActViewHolder) holder;
@@ -183,19 +184,31 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
     }
 
-//    class ChannelViewHolder extends RecyclerView.ViewHolder{
-//
-//        private final Context mContext;
-//
-//        public ChannelViewHolder(Context mContext, View itemView) {
-//            super(itemView);
-//            this.mContext = mContext;
-//        }
-//
-//        public void setData(List<HomeBean.ResultBean.ChannelInfoBean> channel_info) {
-//
-//        }
-//    }
+    class ChannelViewHolder extends RecyclerView.ViewHolder{
+
+        private final Context mContext;
+        private GridView gv;
+
+        public ChannelViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            this.mContext = mContext;
+            gv = (GridView) itemView.findViewById(R.id.gv);
+        }
+
+        public void setData(final List<HomeBean.ResultBean.ChannelInfoBean> channel_info) {
+            ChannelAdapter adapter = new ChannelAdapter(mContext,channel_info);
+            gv.setAdapter(adapter);
+
+            //设置点击某一条的监听
+            gv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    HomeBean.ResultBean.ChannelInfoBean channelInfoBean = channel_info.get(position);
+                    Toast.makeText(mContext, ""+channelInfoBean.getChannel_name(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 
 
 
