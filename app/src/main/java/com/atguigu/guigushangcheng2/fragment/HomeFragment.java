@@ -1,6 +1,7 @@
 package com.atguigu.guigushangcheng2.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.adapter.HomeAdapter;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
 import com.atguigu.guigushangcheng2.bean.HomeBean;
 import com.atguigu.guigushangcheng2.utils.Constants;
@@ -40,6 +42,7 @@ public class HomeFragment extends BaseFragment {
     ImageButton ibTop;
     Unbinder unbinder;
     private String homeUrl;
+    private HomeAdapter adapter;
 
     /**
      * 初始化控件
@@ -86,6 +89,12 @@ public class HomeFragment extends BaseFragment {
         //解析数据
         HomeBean homeBean = JSON.parseObject(json,HomeBean.class);
         Log.e(TAG,"解析成功了=="+homeBean.getResult().getAct_info().get(0).getName());
+        //设置适配器
+        adapter = new HomeAdapter(mContext,homeBean.getResult());
+        rvHome.setAdapter(adapter);
+        //设置布局管理器
+        rvHome.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
+
     }
 
     @Override
