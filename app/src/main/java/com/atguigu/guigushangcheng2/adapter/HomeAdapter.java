@@ -112,7 +112,7 @@ public class HomeAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         //全部写完的时候修改成6，只实现一个类型的话就返回1
-        return 5;
+        return 6;
     }
 
     @Override
@@ -131,9 +131,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
         }
         else if (viewType == RECOMMEND) {
             return new RecommendViewHolder(mContext, inflater.inflate(R.layout.recommend_item, null));
-        } /*else if (viewType == HOT) {
+        }
+        else if (viewType == HOT) {
             return new HotViewHolder(mContext, inflater.inflate(R.layout.hot_item, null));
-        }*/
+        }
 
         return null;
     }
@@ -161,10 +162,11 @@ public class HomeAdapter extends RecyclerView.Adapter {
         else if (getItemViewType(position) == RECOMMEND) {
             RecommendViewHolder recommendViewHolder = (RecommendViewHolder) holder;
             recommendViewHolder.setData(result.getRecommend_info());
-        } /*else if (getItemViewType(position) == HOT) {
-            HotViewHolder hotViewHolder = (HotViewHolder) holder;
-            hotViewHolder.setData(resultBean.getHot_info());
-        }*/
+        }
+        else if (getItemViewType(position) == HOT) {
+            HotViewHolder viewHolder = (HotViewHolder) holder;
+            viewHolder.setData(result.getHot_info());
+        }
     }
 
     class BannerViewHolder extends RecyclerView.ViewHolder{
@@ -366,6 +368,27 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 }
             });
 
+        }
+    }
+
+    class HotViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.tv_more_hot)
+        TextView tvMoreHot;
+        @BindView(R.id.gv_hot)
+        GridView gvHot;
+        HotGridViewAdapter adapter;
+        public HotViewHolder(Context mContext, View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+
+        }
+
+        public void setData(List<HomeBean.ResultBean.HotInfoBean> hot_info) {
+            //1.设置适配器
+            adapter = new HotGridViewAdapter(mContext,hot_info);
+            gvHot.setAdapter(adapter);
+
+            //2.设置item的点击事件
         }
     }
 
