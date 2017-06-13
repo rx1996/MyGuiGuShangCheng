@@ -20,6 +20,7 @@ import com.atguigu.guigushangcheng2.R;
 import com.atguigu.guigushangcheng2.activity.GoodsInfoActivity;
 import com.atguigu.guigushangcheng2.bean.GoodsBean;
 import com.atguigu.guigushangcheng2.bean.HomeBean;
+import com.atguigu.guigushangcheng2.bean.WebViewBean;
 import com.atguigu.guigushangcheng2.utils.Constants;
 import com.atguigu.guigushangcheng2.utils.GlideImageLoader;
 import com.youth.banner.Banner;
@@ -41,6 +42,7 @@ import static com.atguigu.guigushangcheng2.R.id.countdownview;
 
 public class HomeAdapter extends RecyclerView.Adapter {
     public static final String GOODS_BEAN = "goodsBean";
+    public static final String WEBVIEW_BEAN = "webview_bean";
     /*
     上下文
      */
@@ -278,7 +280,15 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 @Override
                 public void onItemClick(int position) {
                     HomeBean.ResultBean.ActInfoBean actInfoBean = act_info.get(position);
-                    Toast.makeText(mContext, ""+actInfoBean.getName(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(mContext, ""+actInfoBean.getName(), Toast.LENGTH_SHORT).show();
+                    WebViewBean webViewBean = new WebViewBean();
+                    webViewBean.setName(actInfoBean.getName());
+                    webViewBean.setIcon_url(actInfoBean.getIcon_url());
+                    webViewBean.setUrl(Constants.BASE_URL_IMAGE+actInfoBean.getUrl());
+
+                    Intent intent = new Intent(mContext, WebViewActivity.class);
+                    intent.putExtra(WEBVIEW_BEAN,webViewBean);
+                    mContext.startActivity(intent);
                 }
             });
         }

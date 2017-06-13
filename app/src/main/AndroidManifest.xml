@@ -21,7 +21,8 @@
             android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:launchMode="singleTask" />
-        <activity android:name=".activity.GoodsInfoActivity"></activity>
+        <activity android:name=".activity.GoodsInfoActivity" />
+        <activity android:name=".adapter.WebViewActivity"></activity>
     </application>
 
 </manifest>
