@@ -6,7 +6,12 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.atguigu.guigushangcheng2.app.MyApplication;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
+import com.atguigu.guigushangcheng2.bean.GoodsBean;
+import com.atguigu.guigushangcheng2.utils.CartStorage;
+
+import java.util.ArrayList;
 
 /**
  * Created by Administrator on 2017/6/12.
@@ -35,5 +40,9 @@ public class ShoppingCartFragment extends BaseFragment {
         super.initData();
         Log.e(TAG,"绑定数据到控件上...");
         textView.setText("我是购物车内容");
+        ArrayList<GoodsBean> allData = CartStorage.getInstance(MyApplication.getContext()).getAllData();
+        for(int i = 0; i < allData.size(); i++) {
+            Log.e("TAG",""+allData.get(i).toString());
+        }
     }
 }
