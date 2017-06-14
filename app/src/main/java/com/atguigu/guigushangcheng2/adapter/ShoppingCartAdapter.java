@@ -123,6 +123,20 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
             });
         }
     }
+    public void checkAll_none(boolean isCheck) {
+        if(datas != null && datas.size() >0){
+
+            for(int i = 0; i < datas.size(); i++) {
+                GoodsBean goodsBean = datas.get(i);
+                //只要有一个不选中就设置非全选
+                goodsBean.setCheck(isCheck);
+                notifyItemChanged(i);
+            }
+        }else{
+            checkboxAll.setChecked(false);
+        }
+
+    }
 
     private void checkAll() {
         if(datas != null && datas.size() >0){
