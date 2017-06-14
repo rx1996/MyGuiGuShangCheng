@@ -80,13 +80,17 @@ public class ShoppingCartFragment extends BaseFragment {
     public void initData() {
         super.initData();
         Log.e(TAG, "绑定数据到控件上...");
+        showData();
+    }
+
+    private void showData() {
         datas = CartStorage.getInstance(MyApplication.getContext()).getAllData();
         if(datas != null && datas.size() >0){
 
             //有数据-空布局隐藏
             llEmptyShopcart.setVisibility(View.GONE);
             //设置适配器
-            ShoppingCartAdapter adapter = new ShoppingCartAdapter(mContext,datas);
+            ShoppingCartAdapter adapter = new ShoppingCartAdapter(mContext,datas,checkboxAll,tvShopcartTotal,cbAll);
             recyclerview.setAdapter(adapter);
             //设置布局管理器
             recyclerview.setLayoutManager(new LinearLayoutManager(mContext,LinearLayoutManager.VERTICAL,false));
@@ -130,5 +134,11 @@ public class ShoppingCartFragment extends BaseFragment {
                 Toast.makeText(mContext, "去逛逛", Toast.LENGTH_SHORT).show();
                 break;
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showData();
     }
 }
