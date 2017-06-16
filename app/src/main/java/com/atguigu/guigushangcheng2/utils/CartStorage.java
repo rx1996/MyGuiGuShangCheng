@@ -95,7 +95,7 @@ public class CartStorage {
         GoodsBean temp = sparseArray.get(Integer.parseInt(bean.getProduct_id()));
         if (temp != null) {
             //存在，就修改
-            temp.setNumber(bean.getNumber());
+            temp.setNumber(bean.getNumber()+temp.getNumber());
         } else {
             //如果不存在，保存到内存中
             temp = bean;
