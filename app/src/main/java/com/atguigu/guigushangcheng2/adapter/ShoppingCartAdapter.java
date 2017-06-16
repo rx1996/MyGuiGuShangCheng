@@ -2,6 +2,7 @@ package com.atguigu.guigushangcheng2.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.app.MyApplication;
 import com.atguigu.guigushangcheng2.bean.GoodsBean;
 import com.atguigu.guigushangcheng2.utils.CartStorage;
 import com.atguigu.guigushangcheng2.utils.Constants;
@@ -54,6 +56,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
                 //判断是否勾选
                 if(goodsBean.isCheck()){
                     result = result + goodsBean.getNumber()* Double.parseDouble(goodsBean.getCover_price());
+                    Log.e("TAG", "result==" +result);
                 }
             }
         }
@@ -69,7 +72,7 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         //1.更加位置得到数据
-        GoodsBean goodsBean = datas.get(position);
+        final GoodsBean goodsBean = datas.get(position);
         //2.绑定数据
         holder.cbGov.setChecked(goodsBean.isCheck());
         //图片
@@ -82,6 +85,17 @@ public class ShoppingCartAdapter extends RecyclerView.Adapter<ShoppingCartAdapte
         holder.addSubView.setMinValue(1);
         //库存
         holder.addSubView.setMaxValue(20);
+        holder.addSubView.setOnNumberChangeListener(new AddSubView.OnNumberChangeListener() {
+            @Override
+            public void onNumberChange(int number) {
+                //把Bean对象更新一下
+                goodsBean.setNumber(number);
+                //更新存储到本地或者服务器上
+                CartStorage.getInstance(MyApplication.getContext()).updateData(goodsBean);
+                showTotalPrice();
+
+            }
+        });
 
     }
 
