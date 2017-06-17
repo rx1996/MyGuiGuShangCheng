@@ -1,6 +1,7 @@
 package com.atguigu.guigushangcheng2.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -13,6 +14,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.activity.GoodsInfoActivity;
+import com.atguigu.guigushangcheng2.bean.GoodsBean;
 import com.atguigu.guigushangcheng2.bean.TypeBean;
 import com.atguigu.guigushangcheng2.utils.Constants;
 import com.atguigu.guigushangcheng2.utils.DensityUtil;
@@ -62,7 +65,7 @@ public class TypeRightAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 1;
+        return 1 + child.size();
     }
 
     @Override
@@ -80,6 +83,9 @@ public class TypeRightAdapter extends RecyclerView.Adapter {
         if (viewType == HOT) {
             View itemView = View.inflate(mContext, R.layout.item_hot_right, null);
             return new HotViewHolder(itemView);
+        }else if (viewType == COMMON) {
+            View itemView = View.inflate(mContext, R.layout.item_common_right, null);
+            return new CommonViewHolder(itemView);
         }
         return null;
     }
@@ -89,6 +95,10 @@ public class TypeRightAdapter extends RecyclerView.Adapter {
         if(getItemViewType(position)==HOT){
             HotViewHolder hotViewHolder = (HotViewHolder) holder;
             hotViewHolder.setData(hot_product_list);
+        }else {
+            int realPostion = position - 1;
+            CommonViewHolder commonViewHolder = (CommonViewHolder) holder;
+            commonViewHolder.setData(child.get(realPostion));
         }
 
     }
@@ -170,7 +180,19 @@ public class TypeRightAdapter extends RecyclerView.Adapter {
                         int  position = (int) myLinear.getTag();
                         TypeBean.ResultBean.HotProductListBean hotProductListBean = hot_product_list.get(position);
                         Toast.makeText(mContext, "name="+hotProductListBean.getName()+","+hotProductListBean.getCover_price(), Toast.LENGTH_SHORT).show();
+                        String cover_price = hot_product_list.get(position).getCover_price();
+                        String name = hot_product_list.get(position).getName();
+                        String figure = hot_product_list.get(position).getFigure();
+                        String product_id = hot_product_list.get(position).getProduct_id();
+                        GoodsBean goodsBean = new GoodsBean();
+                        goodsBean.setProduct_id(product_id);
+                        goodsBean.setFigure(figure);
+                        goodsBean.setCover_price(cover_price);
+                        goodsBean.setName(name);
 
+                        Intent intent = new Intent(mContext, GoodsInfoActivity.class);
+                        intent.putExtra(HomeAdapter.GOODS_BEAN, goodsBean);
+                        mContext.startActivity(intent);
                     }
                 });
 
@@ -181,5 +203,34 @@ public class TypeRightAdapter extends RecyclerView.Adapter {
         }
     }
 
+    class CommonViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.iv_ordinary_right)
+        ImageView ivOrdinaryRight;
+        @BindView(R.id.tv_ordinary_right)
+        TextView tvOrdinaryRight;
+        @BindView(R.id.ll_root)
+        LinearLayout llRoot;
+        public CommonViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+        }
+
+        public void setData(final TypeBean.ResultBean.ChildBean childBean) {
+            //设置图片
+            Glide.with(mContext).load(Constants.BASE_URL_IMAGE + childBean.getPic()).placeholder(R.drawable.new_img_loading_2)
+                    .error(R.drawable.new_img_loading_2).into(ivOrdinaryRight);
+
+            //设置名称
+            tvOrdinaryRight.setText(childBean.getName());
+
+            //设置点击事件
+            llRoot.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(mContext, "name=="+childBean.getName(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
 
 }
