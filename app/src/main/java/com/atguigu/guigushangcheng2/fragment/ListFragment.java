@@ -1,6 +1,7 @@
 package com.atguigu.guigushangcheng2.fragment;
 
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,12 +13,15 @@ import android.widget.ListView;
 import com.alibaba.fastjson.JSON;
 import com.atguigu.guigushangcheng2.R;
 import com.atguigu.guigushangcheng2.adapter.TypeLeftAdapter;
+import com.atguigu.guigushangcheng2.adapter.TypeRightAdapter;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
 import com.atguigu.guigushangcheng2.bean.TypeBean;
 import com.atguigu.guigushangcheng2.utils.Constants;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.Callback;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,6 +46,11 @@ public class ListFragment extends BaseFragment {
     private String[] urls = new String[]{Constants.SKIRT_URL, Constants.JACKET_URL, Constants.PANTS_URL, Constants.OVERCOAT_URL,
             Constants.ACCESSORY_URL, Constants.BAG_URL, Constants.DRESS_UP_URL, Constants.HOME_PRODUCTS_URL, Constants.STATIONERY_URL,
             Constants.DIGIT_URL, Constants.GAME_URL};
+    /**
+     * 右侧的数据
+     */
+    private List<TypeBean.ResultBean> result;
+    private TypeRightAdapter rightAdapter;
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.fragment_list, null);
@@ -97,6 +106,28 @@ public class ListFragment extends BaseFragment {
         TypeBean typeBean = JSON.parseObject(json,TypeBean.class);
 
         Log.e("TAG","解析成功=="+ typeBean.getResult().get(0).getName());
+        result = typeBean.getResult();
+        if(result != null && result.size() >0){
+            //有数据
+            //设置适配器
+            rightAdapter = new TypeRightAdapter(mContext,result);
+            rvRight.setAdapter(rightAdapter);
+
+            //设置布局管理器
+            GridLayoutManager gridLayout = new GridLayoutManager(mContext,3);
+            gridLayout.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    if(position ==0){
+                        return 3;
+                    }else{
+                        return 1;
+                    }
+                }
+            });
+            rvRight.setLayoutManager(gridLayout);
+
+        }
     }
 
     @Override
