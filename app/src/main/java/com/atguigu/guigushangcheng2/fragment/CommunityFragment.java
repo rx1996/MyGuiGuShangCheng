@@ -1,12 +1,13 @@
 package com.atguigu.guigushangcheng2.fragment;
 
-import android.graphics.Color;
+import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atguigu.guigushangcheng2.R;
@@ -33,6 +34,8 @@ public class CommunityFragment extends BaseFragment {
     ImageButton ibCommunityMessage;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    @BindView(R.id.tablayout)
+    TabLayout tablayout;
     Unbinder unbinder;
     private ArrayList<BaseFragment> fragments;
     private CommunityViewPagerAdapter pagerAdapter;
@@ -59,8 +62,9 @@ public class CommunityFragment extends BaseFragment {
 
         MainActivity mainActivity = (MainActivity) mContext;
         //设置适配器
-        pagerAdapter = new CommunityViewPagerAdapter(mainActivity.getSupportFragmentManager(),fragments);
+        pagerAdapter = new CommunityViewPagerAdapter(mainActivity.getSupportFragmentManager(), fragments);
         viewPager.setAdapter(pagerAdapter);
+        tablayout.setupWithViewPager(viewPager);
     }
 
 
@@ -81,4 +85,5 @@ public class CommunityFragment extends BaseFragment {
                 break;
         }
     }
+
 }
