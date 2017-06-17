@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.adapter.NewPostListViewAdapter;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
 import com.atguigu.guigushangcheng2.bean.NewPostBean;
 import com.atguigu.guigushangcheng2.utils.Constants;
@@ -30,7 +31,7 @@ public class NewPostFragment extends BaseFragment {
     @BindView(R.id.lv_new_post)
     ListView lvNewPost;
     Unbinder unbinder;
-
+    private NewPostListViewAdapter adapter;
     /**
      * 初始化控件
      * retur
@@ -80,7 +81,8 @@ public class NewPostFragment extends BaseFragment {
      */
     private void processData(String response) {
         NewPostBean newPostBean = JSON.parseObject(response,NewPostBean.class);
-
+        adapter = new NewPostListViewAdapter(mContext,newPostBean.getResult());
+        lvNewPost.setAdapter(adapter);
 
     }
 
