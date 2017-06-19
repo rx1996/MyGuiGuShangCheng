@@ -24,7 +24,8 @@
             android:launchMode="singleTask" />
         <activity android:name=".activity.GoodsInfoActivity" />
         <activity android:name=".adapter.WebViewActivity" />
-        <activity android:name=".activity.CallCenterActivity"></activity>
+        <activity android:name=".activity.CallCenterActivity" />
+        <activity android:name=".activity.LoginActivity"></activity>
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.atguigu.guigushangcheng2.fragment;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.activity.LoginActivity;
 import com.atguigu.guigushangcheng2.basefragment.BaseFragment;
 import com.hankkin.gradationscroll.GradationScrollView;
 
@@ -139,5 +141,7 @@ public class UserFragment extends BaseFragment {
     }
     @OnClick(R.id.tv_username)
     public void onViewClicked() {
+        Intent intent = new Intent(mContext,LoginActivity.class);
+        startActivity(intent);
     }
 }
