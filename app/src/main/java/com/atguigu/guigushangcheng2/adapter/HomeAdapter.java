@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.atguigu.guigushangcheng2.R;
 import com.atguigu.guigushangcheng2.activity.GoodsInfoActivity;
+import com.atguigu.guigushangcheng2.activity.GoodsListActivity;
 import com.atguigu.guigushangcheng2.bean.GoodsBean;
 import com.atguigu.guigushangcheng2.bean.HomeBean;
 import com.atguigu.guigushangcheng2.bean.WebViewBean;
@@ -253,6 +254,10 @@ public class HomeAdapter extends RecyclerView.Adapter {
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     HomeBean.ResultBean.ChannelInfoBean channelInfoBean = channel_info.get(position);
                     Toast.makeText(mContext, ""+channelInfoBean.getChannel_name(), Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(mContext, GoodsListActivity.class);
+                    intent.putExtra("position",position);
+                    mContext.startActivity(intent);
                 }
             });
         }
