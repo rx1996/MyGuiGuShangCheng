@@ -24,6 +24,7 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.atguigu.guigushangcheng2.R;
+import com.atguigu.guigushangcheng2.adapter.ExpandableListViewAdapter;
 import com.atguigu.guigushangcheng2.adapter.GoodsListAdapter;
 import com.atguigu.guigushangcheng2.bean.GoodsBean;
 import com.atguigu.guigushangcheng2.bean.TypeListBean;
@@ -31,6 +32,9 @@ import com.atguigu.guigushangcheng2.utils.Constants;
 import com.atguigu.guigushangcheng2.utils.SpaceItemDecoration;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.callback.StringCallback;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -211,6 +215,7 @@ public class GoodsListActivity extends AppCompatActivity {
         initView();
         showSelectorLayout();
     }
+    private ExpandableListViewAdapter expandableListViewAdapter;
 
     private void initView() {
         //设置红色
@@ -346,6 +351,77 @@ public class GoodsListActivity extends AppCompatActivity {
                 break;
         }
     }
+    private ArrayList<String> group;
+    private ArrayList<List<String>> child;
+    private void initExpandableListView() {
+
+
+        group = new ArrayList<>();
+        child = new ArrayList<>();
+        //去掉默认箭头
+//        expandableListView.setGroupIndicator(null);
+
+        //添加数据
+        addInfo("全部", new String[]{});
+        addInfo("上衣", new String[]{"古风", "和风", "lolita", "日常"});
+        addInfo("下装", new String[]{"日常", "泳衣", "汉风", "lolita", "创意T恤"});
+        addInfo("外套", new String[]{"汉风", "古风", "lolita", "胖次", "南瓜裤", "日常"});
+
+
+
+        //设置适配器
+        expandableListViewAdapter = new ExpandableListViewAdapter(this, group, child);
+        expandableListView.setAdapter(expandableListViewAdapter);
+
+
+        // 这里是控制如果列表没有孩子菜单不展开的效果
+        expandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
+            @Override
+            public boolean onGroupClick(ExpandableListView parent,
+                                        View v, int groupPosition, long id) {
+                if (child.get(groupPosition).isEmpty()) {// isEmpty没有
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+
+
+
+        //设置点击孩子
+        expandableListView.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
+
+            @Override
+            public boolean onChildClick(ExpandableListView parent, View v,
+                                        int groupPosition, int childPosiion, long id) {
+
+
+                expandableListViewAdapter.isChildSelectable(groupPosition,childPosiion);
+                //刷新适配器
+                expandableListViewAdapter.notifyDataSetChanged();
+//                Toast.makeText(GoodsListActivity.this,"_"+group.get(groupPosition)+"_"+child.get(groupPosition).get(childPosiion)+"被点击了",Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
+
+
+    }
+
+    /**
+     * 添加数据信息
+     *
+     * @param g
+     * @param c
+     */
+    private void addInfo(String g, String[] c) {
+        group.add(g);
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i < c.length; i++) {
+            list.add(c[i]);
+        }
+        child.add(list);
+    }
     //筛选页面
     private void showSelectorLayout() {
         llPriceRoot.setVisibility(View.GONE);
@@ -375,7 +451,7 @@ public class GoodsListActivity extends AppCompatActivity {
         llThemeRoot.setVisibility(View.GONE);
 
         //初始化ExpandableListView
-//        initExpandableListView();
+        initExpandableListView();
     }
     class MyStringCallback extends StringCallback {
 
